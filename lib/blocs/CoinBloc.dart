@@ -19,18 +19,32 @@ class CoinBloc {
     _ethRateFetcher.add(Response.loading('Getting currency'));
     _ltcRateFetcher.add(Response.loading('Getting currency'));
     for (String crypto in cryptoList) {
-      ExchangeRateResponse response =
-          await _coinRepository.getExchangeRate(crypto, to);
-      switch (crypto) {
-        case 'BTC':
-          _btcRateFetcher.add(Response.completed(response));
-          break;
-        case 'ETH':
-          _ethRateFetcher.add(Response.completed(response));
-          break;
-        case 'LTC':
-          _ltcRateFetcher.add(Response.completed(response));
-          break;
+      try {
+        ExchangeRateResponse response =
+            await _coinRepository.getExchangeRate(crypto, to);
+        switch (crypto) {
+          case 'BTC':
+            _btcRateFetcher.add(Response.completed(response));
+            break;
+          case 'ETH':
+            _ethRateFetcher.add(Response.completed(response));
+            break;
+          case 'LTC':
+            _ltcRateFetcher.add(Response.completed(response));
+            break;
+        }
+      } catch (e) {
+        switch (crypto) {
+          case 'BTC':
+            _btcRateFetcher.add(Response.error('Error'));
+            break;
+          case 'ETH':
+            _ethRateFetcher.add(Response.error('Error'));
+            break;
+          case 'LTC':
+            _ltcRateFetcher.add(Response.error('Error'));
+            break;
+        }
       }
     }
   }
